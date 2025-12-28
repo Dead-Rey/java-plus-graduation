@@ -17,7 +17,6 @@ import ru.practicum.validation.UpdateGroup;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/admin/compilations")
-@Validated
 public class AdminCompilationController {
 
     private final AdminCompilationService adminCompilationService;

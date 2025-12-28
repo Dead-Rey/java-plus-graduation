@@ -15,7 +15,6 @@ import ru.practicum.validation.UpdateGroup;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 @RequestMapping("/admin/categories")
 public class AdminCategoryController {
 

@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.EventSort;
@@ -23,7 +21,6 @@ import ru.practicum.ewm.StatsClient;
 import ru.practicum.ewm.ViewStatsOutputDto;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.exception.NotFoundException;
-
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -42,7 +39,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final ObjectMapper objectMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public EventFullDto getEventById(long id, HttpServletRequest request) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event с id " + id + " не найден"));
@@ -87,7 +83,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Event> getEventFullById(long id) {
         return eventRepository.findById(id);
     }
@@ -125,7 +120,8 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         List<EventShortDto> dtos = events.stream()
                 .map(event -> {
-                    Long views = viewsByEventId.getOrDefault(event.getId(), event.getViews() != null ? event.getViews() : 0L);
+                    Long views = viewsByEventId.getOrDefault(event.getId(),
+                            event.getViews() != null ? event.getViews() : 0L);
                     event.setViews(views);
                     return eventMapper.toEventShortDto(event);
                 })
@@ -168,8 +164,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         return Collections.emptyMap();
     }
 
-    @Transactional
-    protected void updateEventsViewsInBatch(List<Event> events, Map<Long, Long> viewsByEventId) {
+    private void updateEventsViewsInBatch(List<Event> events, Map<Long, Long> viewsByEventId) {
         List<Event> eventsToUpdate = events.stream()
                 .filter(event -> viewsByEventId.containsKey(event.getId()))
                 .peek(event -> event.setViews(viewsByEventId.get(event.getId())))
