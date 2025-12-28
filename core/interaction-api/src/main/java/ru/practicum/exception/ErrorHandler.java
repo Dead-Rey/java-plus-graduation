@@ -86,13 +86,4 @@ public class ErrorHandler {
         ErrorResponse errorResponse = new ErrorResponse(List.of(violation));
         return ResponseEntity.status(status).body(errorResponse);
     }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleAllUncaughtException(Exception e) {
-        log.error("Unhandled exception: {}", e.getMessage(), e);
-        final List<Violation> violations = List.of(new Violation("INTERNAL SERVER ERROR",
-                "Произошла непредвиденная ошибка"));
-        return new ErrorResponse(violations);
-    }
 }
