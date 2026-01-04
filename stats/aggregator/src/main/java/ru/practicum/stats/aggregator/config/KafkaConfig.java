@@ -39,6 +39,13 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, VoidDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, UserActionAvroDeserializer.class);
 
+        properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
+        properties.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "5000");
+        properties.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "1");
+        properties.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "300000");
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        properties.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+
         Consumer<String, UserActionAvro> consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(List.of(action));
 
