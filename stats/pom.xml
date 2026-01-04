@@ -21,5 +21,6 @@
         <module>collector</module>
         <module>aggregator</module>
         <module>analyzer</module>
+        <module>stats-dto</module>
     </modules>
 </project>
