@@ -183,7 +183,7 @@ public class EventServiceImpl implements EventService {
         collectorClient.sendUserAction(createUserAction(eventId, userId, ActionTypeProto.ACTION_LIKE, Instant.now()));
     }
 
-    List<EventShortDto> createShortEventDtos(List<Event> events) {
+    private List<EventShortDto> createShortEventDtos(List<Event> events) {
         List<EventRequestDto> requests = requestClient.findByEventIds(new ArrayList<>(
                 events.stream().map(Event::getId).collect(Collectors.toList())
         ));

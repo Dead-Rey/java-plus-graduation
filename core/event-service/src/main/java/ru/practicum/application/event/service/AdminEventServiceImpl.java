@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.application.api.dto.category.CategoryDto;
 import ru.practicum.application.api.dto.enums.EventState;
 import ru.practicum.application.api.dto.enums.StateAction;
@@ -169,6 +170,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
 
+    @Transactional
     @Override
     public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updateRequest) throws ConflictException, ValidationException, NotFoundException, WrongDataException {
         log.info("Редактирование данных события и его статуса");
@@ -201,12 +203,12 @@ public class AdminEventServiceImpl implements AdminEventService {
                 userClient.getById(event.getInitiator()));
     }
 
-    Event getEventById(Long eventId) throws NotFoundException {
+   private Event getEventById(Long eventId) throws NotFoundException {
         return eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Событие " + eventId + " не найдено"));
     }
 
-    void updateEventWithAdminRequest(Event event, UpdateEventAdminRequest updateRequest) throws NotFoundException, WrongDataException {
+    private void updateEventWithAdminRequest(Event event, UpdateEventAdminRequest updateRequest) throws NotFoundException, WrongDataException {
         if (updateRequest.getAnnotation() != null) {
             event.setAnnotation(updateRequest.getAnnotation());
         }
@@ -252,12 +254,12 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
     }
 
-    void saveLocation(Event event) {
+   private void saveLocation(Event event) {
         event.setLocation(locationRepository.save(event.getLocation()));
         log.info("Локация сохранена {}", event.getLocation().getId());
     }
 
-    EventFullDto getViewsCounter(EventFullDto eventFullDto) {
+    private EventFullDto getViewsCounter(EventFullDto eventFullDto) {
         List<RecommendedEventProto> protos = analyzerClient.getInteractionsCount(
                 getInteractionsRequest(List.of(eventFullDto.getId()))
         );
